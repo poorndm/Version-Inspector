@@ -126,7 +126,7 @@ if(choice == 1):
         print("======================================================")
         mail_content += "======================================================\n"+"PRODUCT : "+str(i)+"\nDefault version :"+str(default_version)+"\nLatest software version available :"+str(highest_version)+"\n======================================================"
     #print(mail_content)
-    mail_sender(mail_content)
+    #mail_sender(mail_content)
 
 elif(choice == 2 ):
     product = input("Enter the product name\n")
