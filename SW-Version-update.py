@@ -8,10 +8,10 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-#f = open('version_control_file.json')
+
 pf = open('prod_list.json')
 mf = open('manual_prod_list.json')
-pvf = open('product_default_version.json')
+pvf = open('prod_default_version.json')
 
 
 file_data_pf = json.load(pf)
@@ -27,22 +27,16 @@ choice = int(input("Enter \n1 - for latest version check for all products.\n2 - 
 def get_latest_version(url,expr,product):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    #print("SOUP***********")
-    #print(soup)
+    
 
     for data in soup(['style', 'script']):
         data.decompose()
 
     list_of_contents = ' '.join(soup.stripped_strings).split(" ")
-    #print( "*********list_of_contents*******")
-    #print( list_of_contents)
-
-    # expr1 = "^(bash-)\d[\.\d]*\d(\.tar\.gz)$"
-    # expr2 = "^(git-)\d[\.\d]*\d(\.tar\.gz)$"
-    #print("EXPR=",expr)
+    
     r = re.compile(expr)
     filtered_list = list(filter(r.match, list_of_contents)) # Read Note
-    #print(filtered_list)
+    
     print("======================================================")
     versions_string = " ".join(filtered_list)
 
@@ -53,7 +47,7 @@ def get_latest_version(url,expr,product):
     else:
         extracted_versions = re.findall(r"\d[\.\d]*\d", versions_string)
     #print(extracted_versions)
-    #print("======================================================")
+    
     highest_version = extracted_versions[0]
     for i in range(1,len(extracted_versions)):
     #print("Comparing ",extracted_versions[i]," and ",highest_version)
@@ -62,9 +56,9 @@ def get_latest_version(url,expr,product):
     return highest_version
 
 def mail_sender(mail_content):
-    sender_address = 'poorndm.progress@gmail.com'
-    sender_pass = 'Chuppi_1998$'
-    receiver_address = 'poorndm.progress@gmail.com'
+    sender_address = ''
+    sender_pass = ''
+    receiver_address = ''
     #Setup the MIME
     message = MIMEMultipart()
     message['From'] = sender_address
@@ -84,9 +78,9 @@ def mail_sender(mail_content):
 
 def create_github_issue(product,ticket_title,product_url):
 
-    github_token = "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"
-    repo_owner = "dmpsuresh"
-    repo_name = "Version-Update-Issue"
+    github_token = ""
+    repo_owner = ""
+    repo_name = ""
 
     title = ticket_title
     body = product_url
@@ -116,6 +110,7 @@ if(choice == 1):
         print("======================================================")
         print("PRODUCT : ",i)
         product_details = file_data_pf[i]
+        print (product_details)
         highest_version = get_latest_version(product_details["url"],product_details["expr"],i)
         default_version = file_data_pvf[i]
         print("Latest software version available :",highest_version)
@@ -155,21 +150,21 @@ elif(choice == 2 ):
             default_version = file_data_pvf[product]
             print("======================================================")
             print("PRODUCT : ",product)
-            #product_details = file_data[product]
+       
             highest_version = get_latest_version(product_details["url"],product_details["expr"],product)
             print("======================================================")
             print("Default version :",default_version)
             print("Latest software version available :",highest_version)
-            ticket_title = product+" version update from "+default_version+" to "+highest_version
+            #ticket_title = product+" version update from "+default_version+" to "+highest_version
             print("======================================================")
             if(default_version==highest_version):
                 print("No version updates on the product")
                 print("======================================================")
-            else :
-                ch=input("Would you like to create a ticket for this version-update track ?  y/n :").lower()
-                if(ch == 'y'):
-                    response = create_github_issue(product,ticket_title,url)
-                    print(response.content)
+           # else :
+            #     ch=input("Would you like to create a ticket for this version-update track ?  y/n :").lower()
+            #    if(ch == 'y'):
+            #        response = create_github_issue(product,ticket_title,url)
+                    #print(response.content)
         else :
             print("ERROR : Invalid Product")
     else :

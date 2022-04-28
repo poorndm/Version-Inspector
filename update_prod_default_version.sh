@@ -1,4 +1,11 @@
-Prod_file="product_default_version.json"
+#!/bin/bash
+
+#To update the product_default_version.json 
+#cd omnibus-software/config/software
+set -x
+
+Prod_file="prod_default_version.json"
+cd ../../config/software/
 rm -rf $Prod_file 
 echo "{" >> $Prod_file 
 for FILE in *.rb; do 
@@ -12,5 +19,6 @@ for FILE in *.rb; do
         	fi
 	fi
 done;
-`printf '%s\n' '$' 's/.$//' wq | ex $Prod_file`
-echo "}" >>$Prod_file 
+$(printf '%s\n' '$' 's/.$//' wq | ex $Prod_file)
+echo "}" >> $Prod_file 
+mv $Prod_file ../../.expeditor/Version_Inspector/
